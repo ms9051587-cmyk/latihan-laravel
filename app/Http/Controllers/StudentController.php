@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\student;
+use App\Models\Student;
 use Illuminate\Http\Request;
 
 class StudentController extends Controller
@@ -13,9 +13,9 @@ class StudentController extends Controller
     public function index()
     {
   
-        return view('student.index', [
+        return view('student.index', [    
             'title' => 'student',
-            'students' => student::all(),
+            'students' => Student::latest()->get(),
             ]);
     }
 
@@ -29,7 +29,20 @@ class StudentController extends Controller
      */
     public function store(Request $request)
     {
-        //
+         $validated = $request->validate([
+        'name' => 'required',
+        'nim' => 'required|numeric|digits:12',
+    ],[
+        'name.required' => 'Nama wajib di input',
+        'nim.required' => 'NIM wajib di input',
+        'nim.numeric' => 'NIM wajib berupa angka',
+        'nim.digits' => 'NIM wajib 12 digit',
+    ]
+    );
+ 
+     Student::create($validated);
+ 
+    return redirect('/student');
     }
 
     /**
