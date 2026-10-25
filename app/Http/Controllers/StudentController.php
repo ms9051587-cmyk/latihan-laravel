@@ -29,9 +29,10 @@ class StudentController extends Controller
      */
     public function store(Request $request)
     {
-         $validated = $request->validate([
-        'name' => 'required',
-        'nim' => 'required|numeric|digits:12',
+         $validated = $request->validate(
+            [
+             'name' => 'required',
+              'nim' => 'required|numeric|digits:12',
     ],[
         'name.required' => 'Nama wajib di input',
         'nim.required' => 'NIM wajib di input',
@@ -41,14 +42,14 @@ class StudentController extends Controller
     );
  
      Student::create($validated);
- 
-    return redirect('/student');
+     return to_route('student.index')->withSuccess('Data berhasil ditambahkan');
+    
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(student $student)
+    public function show(Student $student)
     {
         //
     }
@@ -56,24 +57,40 @@ class StudentController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(student $student)
+    public function edit(Student $student)
     {
-        //
+        return view('student.edit', [    
+            'title' => 'Edit student',
+            'student' => $student,
+            ]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, student $student)
+    public function update(Request $request, Student $student)
     {
-        //
+             $validated = $request->validate(
+            [
+             'name' => 'required',
+              'nim' => 'required|numeric|digits:12',
+    ],[
+        'name.required' => 'Nama wajib di input',
+        'nim.required' => 'NIM wajib di input',
+        'nim.numeric' => 'NIM wajib berupa angka',
+        'nim.digits' => 'NIM wajib 12 digit',
+    ]
+    );
+    $student->update($validated);
+     return to_route('student.index')->withSuccess('Data berhasil diubah');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(student $student)
+    public function destroy(Student $student)
     {
-        //
+        $student->delete();
+     return to_route('student.index')->withSuccess('Data berhasil hapus');
     }
 }
